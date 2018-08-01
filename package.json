@@ -1,6 +1,6 @@
 {
   "name": "ts-expose-status-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript language service plugin to expose build status to external tools",
   "main": "dist/index.js",
   "repository": "https://github.com/benchling/ts-expose-status-plugin.git",
@@ -11,11 +11,11 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@types/node-ipc": "^9.1.1",
     "node-ipc": "^9.1.1",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@types/node-ipc": "^9.1.1",
     "prettier": "^1.14.0",
     "typescript": "^3.0.1"
   },
