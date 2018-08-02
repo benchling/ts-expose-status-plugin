@@ -1,6 +1,7 @@
 import NodeIPC from 'node-ipc';
 import {resolve} from 'path';
-import {SimpleDiagnostic} from './Protocol';
+
+import {CALL_EVENT, SERVER_ID, SimpleDiagnostic} from './Protocol';
 
 // The node-ipc types don't export its class types, but we can still hack them out.
 type IPC = InstanceType<typeof NodeIPC.IPC>;
@@ -34,13 +35,13 @@ export default class TSStatusClient {
     onError,
   }: {
     onSuccess: (client: TSStatusClient) => Promise<T>;
-    onError: () => Promise<T>;
+    onError: (e: Error) => Promise<T>;
   }): Promise<T> {
     let client;
     try {
       client = await this.connect();
     } catch (e) {
-      return onError();
+      return onError(e);
     }
     let result;
     try {
@@ -60,10 +61,10 @@ export default class TSStatusClient {
       // maxRetries has a bad TS type, so work around using any.
       // tslint:disable-next-line no-any
       (ipc.config.maxRetries as any) = 0;
-      ipc.connectTo('ts-expose-status-plugin-server', () => {
-        const connection = ipc.of['ts-expose-status-plugin-server'];
-        connection.on('error', () => {
-          rejectPromise(new Error('Could not connect to language service.'));
+      ipc.connectTo(SERVER_ID, () => {
+        const connection = ipc.of[SERVER_ID];
+        connection.on('error', (e: Error) => {
+          rejectPromise(e);
         });
         connection.on('connect', () => {
           resolvePromise(new TSStatusClient(ipc, connection));
@@ -73,7 +74,7 @@ export default class TSStatusClient {
   }
 
   private disconnect(): void {
-    this.ipc.disconnect('ts-expose-status-plugin-server');
+    this.ipc.disconnect(SERVER_ID);
   }
 
   getAllErrors(): Promise<Array<SimpleDiagnostic>> {
@@ -88,13 +89,17 @@ export default class TSStatusClient {
   }
 
   // tslint:disable-next-line no-any
-  private call(payload: any): Promise<any> {
+  private async call(payload: any): Promise<any> {
     if (this.responseCallback != null) {
       throw new Error('Expected responseCallback to be unset. May only make one concurrent call.');
     }
-    return new Promise((resolvePromise) => {
+    const response = await new Promise((resolvePromise) => {
       this.responseCallback = resolvePromise;
-      this.connection.emit('call', payload);
+      this.connection.emit(CALL_EVENT, payload);
     });
+    if (typeof response === 'string') {
+      throw new Error(`Error from TS language service: ${response}`);
+    }
+    return response;
   }
 }

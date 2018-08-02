@@ -1,6 +1,6 @@
 {
   "name": "ts-expose-status-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "TypeScript language service plugin to expose build status to external tools",
   "main": "dist/index.js",
   "repository": "https://github.com/benchling/ts-expose-status-plugin.git",

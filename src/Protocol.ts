@@ -5,3 +5,6 @@ export interface SimpleDiagnostic {
   message: string;
   code: number;
 }
+
+export const SERVER_ID = 'ts-expose-status-plugin-server';
+export const CALL_EVENT = 'call';
