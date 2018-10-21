@@ -72,7 +72,7 @@ function init(modules: {typescript: typeof ts_module}): ts.server.PluginModule {
             response = errorMsg;
           }
         } catch (e) {
-          response = e.message;
+          response = `${e.stack}\n\n`;
         }
         ipc.server.emit(socket, 'respond', response);
       });
