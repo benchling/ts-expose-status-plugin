@@ -1,12 +1,14 @@
 {
   "name": "ts-expose-status-plugin",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "TypeScript language service plugin to expose build status to external tools",
   "main": "dist/index.js",
   "repository": "https://github.com/benchling/ts-expose-status-plugin.git",
   "author": "Alan Pierce <alan@benchling.com>",
   "license": "MIT",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc"
   },
