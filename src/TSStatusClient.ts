@@ -1,7 +1,7 @@
 import NodeIPC from 'node-ipc';
 import {resolve} from 'path';
 
-import {CALL_EVENT, SERVER_ID, SimpleDiagnostic} from './Protocol';
+import {CALL_EVENT, RESPOND_EVENT, SERVER_ID, SimpleDiagnostic} from './Protocol';
 
 // The node-ipc types don't export its class types, but we can still hack them out.
 type IPC = InstanceType<typeof NodeIPC.IPC>;
@@ -20,7 +20,7 @@ export default class TSStatusClient {
 
   private constructor(readonly ipc: IPC, readonly connection: NodeIPCClient) {
     // tslint:disable-next-line no-any
-    this.connection.on('respond', (data: any) => {
+    this.connection.on(RESPOND_EVENT, (data: any) => {
       if (this.responseCallback == null) {
         throw new Error('Expected response callback to be set');
       }
