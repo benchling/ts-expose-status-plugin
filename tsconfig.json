@@ -4,7 +4,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "importHelpers": true,
-    "lib": ["es2020"],
+    "lib": ["es2023"],
     "module": "commonjs",
     "noEmitHelpers": true,
     "noImplicitAny": true,
