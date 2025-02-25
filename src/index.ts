@@ -1,11 +1,11 @@
-import { appendFileSync } from 'fs';
-import { IPC } from 'node-ipc';
-import { homedir } from 'os';
+import {IPC} from 'node-ipc';
+import {appendFileSync} from 'fs';
+import {homedir} from 'os';
 import ts from 'typescript';
 import * as ts_module from 'typescript/lib/tsserverlibrary';
 
-import { resolve } from 'path';
-import { CALL_EVENT, RESPOND_EVENT, SERVER_ID, SimpleDiagnostic } from './Protocol';
+import {CALL_EVENT, RESPOND_EVENT, SERVER_ID, SimpleDiagnostic} from './Protocol';
+import {resolve} from 'path';
 
 const LOG_FILE = `${homedir()}/ts-expose-status-plugin-output.log`;
 const LOGGING_ENABLED = false;
