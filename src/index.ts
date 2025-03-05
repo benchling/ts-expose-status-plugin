@@ -1,6 +1,7 @@
 import {IPC} from 'node-ipc';
 import {appendFileSync} from 'fs';
 import {homedir} from 'os';
+import ts from 'typescript';
 import * as ts_module from 'typescript/lib/tsserverlibrary';
 
 import {CALL_EVENT, RESPOND_EVENT, SERVER_ID, SimpleDiagnostic} from './Protocol';
@@ -70,7 +71,7 @@ class MultiProjectChecker {
   projectCheckers: Array<ProjectChecker> = [];
 
   registerProject(ts: typeof ts_module, info: ts.server.PluginCreateInfo) {
-    log(`Initializing project ${info.project.projectName}`);
+    log(`Initializing project ${info.project.getProjectName()}`);
     this.projectCheckers.push(new ProjectChecker(ts, info));
   }
 
