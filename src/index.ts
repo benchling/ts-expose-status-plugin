@@ -42,13 +42,18 @@ class ProjectChecker {
   }
 
   getAllErrors(): Array<SimpleDiagnostic> {
-    const program = this.info.languageService.getProgram();
-    if (!program) {
+    try {
+      const program = this.info.languageService.getProgram();
+      if (!program) {
+        return [];
+      }
+      // Ignore other diagnostic types for now, since they tend to not correspond to typical TS errors.
+      const tsDiagnostics = [...program.getSemanticDiagnostics(), ...program.getSyntacticDiagnostics()];
+      return tsDiagnostics.map((diagnostic) => this.convertToSimpleDiagnostic(diagnostic));
+    } catch (e) {
+      log(`Error getting program for project ${this.info.project.getProjectName()}: ${e}`);
       return [];
     }
-    // Ignore other diagnostic types for now, since they tend to not correspond to typical TS errors.
-    const tsDiagnostics = [...program.getSemanticDiagnostics(), ...program.getSyntacticDiagnostics()];
-    return tsDiagnostics.map((diagnostic) => this.convertToSimpleDiagnostic(diagnostic));
   }
 
   getErrorsForFile(filename: string): Array<SimpleDiagnostic> {
@@ -60,7 +65,12 @@ class ProjectChecker {
   }
 
   fileInProject(filename: string): boolean {
-    return Boolean(this.info.languageService.getProgram()?.getSourceFile(filename));
+    try {
+      return Boolean(this.info.languageService.getProgram()?.getSourceFile(filename));
+    } catch (e) {
+      log(`Error checking if file ${filename} is in project: ${e}`);
+      return false;
+    }
   }
 }
 
